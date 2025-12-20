@@ -1,0 +1,16 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Detalle del mensaje{% endblock %}
+
+{% block content %}
+<h1>{{ mensaje.subject }}</h1>
+
+<p><strong>De:</strong> {{ mensaje.sender.username }}</p>
+<p><strong>Para:</strong> {{ mensaje.recipient.username }}</p>
+<p><strong>Fecha:</strong> {{ mensaje.created_at }}</p>
+
+<hr>
+<p>{{ mensaje.body }}</p>
+
+<a href="{% url 'inbox' %}" class="btn btn-secondary mt-3">Volver</a>
+{% endblock %}

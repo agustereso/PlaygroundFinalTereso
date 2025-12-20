@@ -1,0 +1,15 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Home - Blog de Viajes{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Bienvenid@ a mi Blog de Viajes ✈️</h1>
+        <p class="col-md-8 fs-4">
+            Acá comparto experiencias, destinos y recomendaciones de mis viajes.
+        </p>
+        <a href="{% url 'pages_list' %}" class="btn btn-primary btn-lg">Ver viajes publicados</a>
+    </div>
+</div>
+{% endblock %}

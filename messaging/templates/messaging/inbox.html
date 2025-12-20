@@ -1,0 +1,32 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Bandeja de entrada{% endblock %}
+
+{% block content %}
+<h1>Bandeja de entrada</h1>
+
+<a href="{% url 'message_new' %}" class="btn btn-primary mb-3">Nuevo mensaje</a>
+<a href="{% url 'sent' %}" class="btn btn-outline-secondary mb-3">Ver enviados</a>
+
+{% if mensajes %}
+<ul class="list-group">
+    {% for mensaje in mensajes %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <strong>De:</strong> {{ mensaje.sender.username }}<br>
+            <strong>Asunto:</strong>
+            <a href="{% url 'message_detail' mensaje.pk %}">
+                {{ mensaje.subject }}
+            </a><br>
+            <small>{{ mensaje.created_at }}</small>
+        </div>
+        {% if not mensaje.is_read %}
+        <span class="badge text-bg-primary">Nuevo</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No tenés mensajes aún.</p>
+{% endif %}
+{% endblock %}

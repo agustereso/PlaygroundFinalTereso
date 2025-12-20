@@ -1,0 +1,38 @@
+{% extends "pages/base.html" %}
+{% block title %}Viajes{% endblock %}
+
+{% block content %}
+<h1>Viajes publicados</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por título..." value="{{ request.GET.q }}">
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" type="submit">Buscar</button>
+    </div>
+</form>
+
+{% if posts %}
+<div class="row">
+    {% for post in posts %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            {% if post.imagen %}
+            <img src="{{ post.imagen.url }}" class="card-img-top" alt="{{ post.titulo }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ post.titulo }}</h5>
+                <p class="card-text"><strong>Destino:</strong> {{ post.destino }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'page_detail' post.pk %}" class="btn btn-sm btn-primary">Leer más</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No hay páginas aún.</p>
+{% endif %}
+{% endblock %}

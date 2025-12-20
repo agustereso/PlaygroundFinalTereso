@@ -1,0 +1,18 @@
+# Archivos de Python compilados
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entorno virtual
+venv/
+.env/
+
+# Base de datos (no subir al repo)
+db.sqlite3
+
+# Archivos subidos por usuarios (imágenes, etc.)
+media/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/

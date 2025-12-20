@@ -1,0 +1,28 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+<h1>Mi perfil</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        {% if user.profile.avatar %}
+        <img src="{{ user.profile.avatar.url }}" class="img-fluid rounded" alt="Avatar">
+        {% else %}
+        <p>Sin avatar.</p>
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <p><strong>Usuario:</strong> {{ user.username }}</p>
+        <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+        <p><strong>Fecha nacimiento:</strong> {{ user.profile.fecha_nacimiento }}</p>
+        <p><strong>Link:</strong> <a href="{{ user.profile.link }}" target="_blank">{{ user.profile.link }}</a></p>
+
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Editar perfil</a>
+        <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">Cambiar contraseña</a>
+    </div>
+</div>
+{% endblock %}
