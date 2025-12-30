@@ -1,0 +1,21 @@
+{% extends "pages/base.html" %}
+{% block title %}Borrar viaje{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-3">¿Seguro que querés borrar este viaje?</h1>
+                <p class="mb-4"><strong>{{ object.titulo }}</strong> — {{ object.destino }}</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <a class="btn btn-outline-secondary" href="{% url 'page_detail' object.pk %}">Cancelar</a>
+                    <button class="btn btn-danger" type="submit">Sí, borrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

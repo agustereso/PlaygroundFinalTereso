@@ -5,9 +5,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("pages.urls")),        # páginas principales
-    path("accounts/", include("accounts.urls")),  # las crearemos luego
-    path("mensajes/", include("messaging.urls")), # idem
+    path("", include("pages.urls")),
+    path("accounts/", include("accounts.urls")),
+    path("mensajes/", include("messaging.urls")),
 ]
 
 if settings.DEBUG:

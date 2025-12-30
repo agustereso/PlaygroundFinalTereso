@@ -1,71 +1,81 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
+from .forms import PostViajeForm
 from .models import PostViaje
 
 
 def home(request):
-    """Vista de inicio/home."""
-    return render(request, "pages/home.html")
+    ultimos = PostViaje.objects.order_by("-fecha")[:6]
+    return render(request, "pages/home.html", {"ultimos": ultimos})
 
 
+@login_required
 def about(request):
-    """Vista de 'Acerca de mí'."""
     return render(request, "pages/about.html")
 
 
 class PostViajeListView(ListView):
-    """Listado de posts de viaje."""
     model = PostViaje
     template_name = "pages/pages_list.html"
     context_object_name = "posts"
-    paginate_by = 6  
+    paginate_by = 9
 
     def get_queryset(self):
-        queryset = PostViaje.objects.all().order_by("-fecha_publicacion")
-        busqueda = self.request.GET.get("q")
-        if busqueda:
-            queryset = queryset.filter(titulo__icontains=busqueda)
-        return queryset
+        qs = super().get_queryset().order_by("-fecha")
+        q = self.request.GET.get("q")
+        if q:
+            qs = qs.filter(titulo__icontains=q)
+        return qs
 
 
 class PostViajeDetailView(DetailView):
-    """Detalle de un post de viaje."""
     model = PostViaje
     template_name = "pages/page_detail.html"
     context_object_name = "post"
 
 
-@method_decorator(login_required, name="dispatch")
-class PostViajeCreateView(CreateView):
-    """Crear un nuevo post de viaje (requiere login)."""
+class PostViajeCreateView(LoginRequiredMixin, CreateView):
     model = PostViaje
-    fields = ["titulo", "destino", "contenido", "imagen"]
+    form_class = PostViajeForm
     template_name = "pages/page_form.html"
     success_url = reverse_lazy("pages_list")
 
     def form_valid(self, form):
         form.instance.autor = self.request.user
+        messages.success(self.request, "Viaje publicado correctamente.")
         return super().form_valid(form)
 
 
-class PostViajeUpdateView(LoginRequiredMixin, UpdateView):
-    """Editar un post de viaje existente (requiere login)."""
+class EsAutorMixin(UserPassesTestMixin):
+    def test_func(self):
+        obj = self.get_object()
+        return obj.autor == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tenés permiso para realizar esta acción.")
+        return super().handle_no_permission()
+
+
+class PostViajeUpdateView(LoginRequiredMixin, EsAutorMixin, UpdateView):
     model = PostViaje
-    fields = ["titulo", "destino", "contenido", "imagen"]
+    form_class = PostViajeForm
     template_name = "pages/page_form.html"
-    success_url = reverse_lazy("pages_list")
-    login_url = "/accounts/login/"  
+
+    def get_success_url(self):
+        messages.success(self.request, "Viaje actualizado.")
+        return reverse_lazy("page_detail", kwargs={"pk": self.object.pk})
 
 
-class PostViajeDeleteView(LoginRequiredMixin, DeleteView):
-    """Borrar un post de viaje (requiere login)."""
+class PostViajeDeleteView(LoginRequiredMixin, EsAutorMixin, DeleteView):
     model = PostViaje
     template_name = "pages/page_confirm_delete.html"
     success_url = reverse_lazy("pages_list")
-    login_url = "/accounts/login/"
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Viaje eliminado.")
+        return super().delete(request, *args, **kwargs)
