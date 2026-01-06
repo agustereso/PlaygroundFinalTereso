@@ -92,7 +92,7 @@ Para ejecutar el proyecto de manera local, seguí estos pasos:
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/tu-repositorio.git
+   git clone https://github.com/agustereso/PlaygroundFinalTereso.git
 
 2. **Ingresar a la carpeta del proyecto**
 
