@@ -1,9 +1,11 @@
 from django.urls import path
-from . import views
+from .views import InboxView, SentView, MessageDetailView, MessageCreateView
+
+app_name = "messaging"
 
 urlpatterns = [
-    path("inbox/", views.inbox_view, name="inbox"),
-    path("sent/", views.sent_view, name="sent"),
-    path("new/", views.message_create_view, name="message_new"),
-    path("<int:pk>/", views.message_detail_view, name="message_detail"),
+    path("messages/", InboxView.as_view(), name="inbox"),
+    path("messages/sent/", SentView.as_view(), name="sent"),
+    path("messages/new/", MessageCreateView.as_view(), name="message_create"),
+    path("messages/<int:pk>/", MessageDetailView.as_view(), name="message_detail"),
 ]

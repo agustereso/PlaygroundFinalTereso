@@ -7,6 +7,9 @@ from .views import (
     PostViajeCreateView,
     PostViajeUpdateView,
     PostViajeDeleteView,
+    CategoriaCreateView,
+    DestinoCreateView,
+    comentario_create,
 )
 
 urlpatterns = [
@@ -17,4 +20,7 @@ urlpatterns = [
     path("pages/crear/", PostViajeCreateView.as_view(), name="page_create"),
     path("pages/<int:pk>/editar/", PostViajeUpdateView.as_view(), name="page_update"),
     path("pages/<int:pk>/borrar/", PostViajeDeleteView.as_view(), name="page_delete"),
+    path("categorias/crear/", CategoriaCreateView.as_view(), name="categoria_create"),
+    path("destinos/crear/", DestinoCreateView.as_view(), name="destino_create"),
+    path("pages/<int:pk>/comentar/", comentario_create, name="comentario_create"),
 ]

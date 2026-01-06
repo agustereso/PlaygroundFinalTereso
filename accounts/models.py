@@ -1,16 +1,14 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
-    
-    objects = models.Manager()
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
-    fecha_nacimiento = models.DateField(blank=True, null=True)
-    link = models.URLField(blank=True, null=True)
+    bio = models.CharField(max_length=240, blank=True)
 
+    objects = models.Manager()
 
-def __str__(self):
-    return f"Perfil de {self.user}"
+    def __str__(self):
+        # pylint: disable=no-member
+        return getattr(self.user, "username", str(self.user))

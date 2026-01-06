@@ -1,28 +1,65 @@
 {% extends "pages/base.html" %}
-
-{% block title %}Perfil{% endblock %}
+{% block title %}Mi perfil{% endblock %}
 
 {% block content %}
-<h1>Mi perfil</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        {% if user.profile.avatar %}
-        <img src="{{ user.profile.avatar.url }}" class="img-fluid rounded" alt="Avatar">
-        {% else %}
-        <p>Sin avatar.</p>
-        {% endif %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Mi perfil</h1>
+        <div class="text-muted">Tus datos y configuración</div>
     </div>
-    <div class="col-md-8">
-        <p><strong>Usuario:</strong> {{ user.username }}</p>
-        <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
-        <p><strong>Fecha nacimiento:</strong> {{ user.profile.fecha_nacimiento }}</p>
-        <p><strong>Link:</strong> <a href="{{ user.profile.link }}" target="_blank">{{ user.profile.link }}</a></p>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-light" href="{% url 'profile_edit' %}">Editar perfil</a>
+        <a class="btn btn-outline-light" href="{% url 'password_change' %}">Cambiar contraseña</a>
+    </div>
+</div>
 
-        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Editar perfil</a>
-        <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">Cambiar contraseña</a>
+<div class="card">
+    <div class="card-body p-4">
+        <div class="row g-4 align-items-start">
+            <div class="col-md-4 text-center">
+                {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" class="img-fluid rounded-4" style="max-width:220px;" alt="Avatar">
+                {% else %}
+                <div class="empty-state">Sin avatar.</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-8">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="text-muted small">Usuario</div>
+                        <div class="fw-bold">{{ user.username }}</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted small">Nombre</div>
+                        <div class="fw-bold">{{ user.get_full_name|default:"-" }}</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted small">Email</div>
+                        <div class="fw-bold">{{ user.email|default:"-" }}</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted small">Bio</div>
+                        <div class="fw-bold">{{ profile.bio|default:"-" }}</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted small">Fecha nacimiento</div>
+                        <div class="fw-bold">{{ profile.fecha_nacimiento|default:"-" }}</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted small">Link</div>
+                        <div class="fw-bold">
+                            {% if profile.link %}
+                            <a href="{{ profile.link }}" target="_blank" rel="noopener">{{ profile.link }}</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 {% endblock %}

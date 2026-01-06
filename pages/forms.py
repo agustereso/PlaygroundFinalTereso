@@ -1,38 +1,32 @@
 from django import forms
-from .models import PostViaje
+from .models import PostViaje, Categoria, Destino
+
 
 class PostViajeForm(forms.ModelForm):
     class Meta:
         model = PostViaje
-        fields = "__all__"
-        labels = {
-            "titulo": "Título",
-            "destino": "Destino",
-            "contenido": "Contenido",
-            "imagen": "Imagen",
-            "fecha": "Fecha",
-        }
-        error_messages = {
-            "titulo": {"required": "El título es obligatorio."},
-            "destino": {"required": "El destino es obligatorio."},
-            "contenido": {"required": "El contenido es obligatorio."},
-            "fecha": {"required": "La fecha es obligatoria.", "invalid": "Ingresá una fecha válida."},
-            "imagen": {"invalid": "Subí una imagen válida."},
-        }
-
+        fields = ["titulo", "categoria", "destino", "contenido", "imagen"]
         widgets = {
-            "titulo": forms.TextInput(attrs={"placeholder": "Ej: Aventura en Bariloche"}),
-            "destino": forms.TextInput(attrs={"placeholder": "Ej: Bariloche, Argentina"}),
-            "fecha": forms.DateInput(attrs={"type": "date"}),
+            "titulo": forms.TextInput(attrs={"class": "form-control", "placeholder": "Título"}),
+            "categoria": forms.Select(attrs={"class": "form-select"}),
+            "destino": forms.Select(attrs={"class": "form-select"}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        for name, field in self.fields.items():
-            if isinstance(field.widget, forms.CheckboxInput):
-                field.widget.attrs.update({"class": "form-check-input"})
-            elif isinstance(field.widget, forms.ClearableFileInput):
-                field.widget.attrs.update({"class": "form-control"})
-            else:
-                field.widget.attrs.update({"class": "form-control"})
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ["nombre"]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Aventura"}),
+        }
+
+
+class DestinoForm(forms.ModelForm):
+    class Meta:
+        model = Destino
+        fields = ["nombre", "pais"]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Bariloche"}),
+            "pais": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej: Argentina"}),
+        }

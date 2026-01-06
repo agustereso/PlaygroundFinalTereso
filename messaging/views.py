@@ -1,42 +1,70 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.views.generic import ListView, DetailView, CreateView
 
-from .models import Message
 from .forms import MessageForm
+from .models import Message
 
 
-@login_required
-def inbox_view(request):
-    mensajes = Message.objects.filter(recipient=request.user)
-    return render(request, "messaging/inbox.html", {"mensajes": mensajes})
+class InboxView(LoginRequiredMixin, ListView):
+    model = Message
+    template_name = "messaging/inbox.html"
+    context_object_name = "mensajes"
+    paginate_by = 10
+
+    def get_queryset(self):
+        qs = Message.objects.select_related("from_user", "to_user").filter(to_user=self.request.user)
+        q = self.request.GET.get("q")
+        if q:
+            qs = qs.filter(Q(subject__icontains=q) | Q(body__icontains=q) | Q(from_user__username__icontains=q))
+        return qs
 
 
-@login_required
-def sent_view(request):
-    mensajes = Message.objects.filter(sender=request.user)
-    return render(request, "messaging/sent.html", {"mensajes": mensajes})
+class SentView(LoginRequiredMixin, ListView):
+    model = Message
+    template_name = "messaging/sent.html"
+    context_object_name = "mensajes"
+    paginate_by = 10
+
+    def get_queryset(self):
+        qs = Message.objects.select_related("from_user", "to_user").filter(from_user=self.request.user)
+        q = self.request.GET.get("q")
+        if q:
+            qs = qs.filter(Q(subject__icontains=q) | Q(body__icontains=q) | Q(to_user__username__icontains=q))
+        return qs
 
 
-@login_required
-def message_detail_view(request, pk):
-    mensaje = get_object_or_404(Message, pk=pk)
-    if mensaje.recipient == request.user and not mensaje.is_read:
-        mensaje.is_read = True
-        mensaje.save()
-    return render(request, "messaging/message_detail.html", {"mensaje": mensaje})
+class MessageDetailView(LoginRequiredMixin, DetailView):
+    model = Message
+    template_name = "messaging/message_detail.html"
+    context_object_name = "mensaje"
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(
+            Message.objects.select_related("from_user", "to_user"),
+            pk=self.kwargs["pk"],
+        )
+        user = self.request.user
+        if obj.to_user != user and obj.from_user != user:
+            raise PermissionError("No autorizado")
+        if obj.to_user == user and not obj.is_read:
+            obj.is_read = True
+            obj.save(update_fields=["is_read"])
+        return obj
 
 
-@login_required
-def message_create_view(request):
-    if request.method == "POST":
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            mensaje = form.save(commit=False)
-            mensaje.sender = request.user
-            mensaje.save()
-            messages.success(request, "Mensaje enviado correctamente.")
-            return redirect("inbox")
-    else:
-        form = MessageForm()
-    return render(request, "messaging/message_form.html", {"form": form})
+class MessageCreateView(LoginRequiredMixin, CreateView):
+    model = Message
+    form_class = MessageForm
+    template_name = "messaging/message_form.html"
+    
+    def get_success_url(self):
+        return reverse("messaging:inbox")
+    
+    def form_valid(self, form):
+        form.instance.from_user = self.request.user
+        messages.success(self.request, "Mensaje enviado.")
+        return super().form_valid(form)

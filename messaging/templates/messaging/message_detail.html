@@ -1,16 +1,50 @@
 {% extends "pages/base.html" %}
-
-{% block title %}Detalle del mensaje{% endblock %}
+{% block title %}Conversación{% endblock %}
 
 {% block content %}
-<h1>{{ mensaje.subject }}</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Conversación</h1>
+        <div class="text-muted">Historial de mensajes</div>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}">Volver</a>
+        <a class="btn btn-primary" href="{% url 'messaging:message_create' %}">Nuevo mensaje</a>
+    </div>
+</div>
 
-<p><strong>De:</strong> {{ mensaje.sender.username }}</p>
-<p><strong>Para:</strong> {{ mensaje.recipient.username }}</p>
-<p><strong>Fecha:</strong> {{ mensaje.created_at }}</p>
+<div class="card mb-4">
+    <div class="card-body p-4">
+        {% if messages_list %}
+        <div class="d-flex flex-column gap-3">
+            {% for m in messages_list %}
+            <div class="p-3 rounded-4"
+                style="border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">{{ m.sender.username }}</div>
+                    <div class="text-muted small">{{ m.created_at|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="mt-2">{{ m.body|linebreaksbr }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">Todavía no hay mensajes en esta conversación.</div>
+        {% endif %}
+    </div>
+</div>
 
-<hr>
-<p>{{ mensaje.body }}</p>
-
-<a href="{% url 'inbox' %}" class="btn btn-secondary mt-3">Volver</a>
+<div class="card">
+    <div class="card-body p-4">
+        <h2 class="h5 mb-3">Responder</h2>
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex gap-2 pt-2">
+                <button class="btn btn-primary" type="submit">Enviar</button>
+                <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

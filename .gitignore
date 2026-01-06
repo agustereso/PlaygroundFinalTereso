@@ -16,3 +16,7 @@ media/
 # Archivos de configuración de IDEs
 .vscode/
 .idea/
+
+# Cache de Python
+__pycache__/
+*.pyc

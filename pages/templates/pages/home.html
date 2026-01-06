@@ -1,71 +1,96 @@
 {% extends "pages/base.html" %}
-
-{% block title %}Inicio | Blog de viajes{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
-<section class="mb-5">
-    <div class="row mb-4">
-        <div class="col-lg-8">
-            <h2 class="fw-bold">Últimos viajes publicados</h2>
-            <p class="text-muted">
-                Descubrí los últimos destinos que fueron subidos al blog.
-            </p>
-        </div>
-        <div class="col-lg-4 text-lg-end">
-            <a href="{% url 'pages_list' %}" class="btn btn-outline-primary">
-                Ver todos los viajes
-            </a>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-2">Últimos viajes</h2>
+                <div class="text-muted mb-4">Inspiración rápida para tu próxima aventura</div>
+
+                {% if ultimos %}
+                <div class="row g-3">
+                    {% for p in ultimos %}
+                    <div class="col-md-6">
+                        <div class="card h-100"
+                            style="border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);">
+                            {% if p.imagen %}
+                            <img src="{{ p.imagen.url }}" class="card-img-top" style="height:180px; object-fit:cover;"
+                                alt="{{ p.titulo }}">
+                            {% else %}
+                            <div style="height:180px; background: rgba(255,255,255,.06);"
+                                class="d-flex align-items-center justify-content-center text-muted">
+                                Sin imagen
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <h3 class="h6 mb-1">{{ p.titulo }}</h3>
+                                    <span class="badge text-bg-secondary">{{ p.fecha|date:"d/m/Y" }}</span>
+                                </div>
+                                <div class="text-muted small mb-2">
+                                    {% if p.destino %}{{ p.destino }}{% else %}Destino -{% endif %}
+                                    ·
+                                    {% if p.categoria %}{{ p.categoria }}{% else %}Categoría -{% endif %}
+                                </div>
+                                <a class="btn btn-outline-light btn-sm" href="{% url 'page_detail' p.pk %}">Ver
+                                    detalle</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a class="btn btn-primary" href="{% url 'pages_list' %}">Ver todos los viajes</a>
+                </div>
+                {% else %}
+                <div class="p-4 rounded-4"
+                    style="border:1px dashed rgba(255,255,255,.15); background: rgba(255,255,255,.03);">
+                    <div class="fw-bold mb-1">Todavía no hay viajes publicados</div>
+                    <div class="text-muted">Cuando publiques tu primer viaje, va a aparecer acá.</div>
+                    {% if user.is_authenticated %}
+                    <div class="mt-3">
+                        <a class="btn btn-primary" href="{% url 'page_create' %}">Publicar viaje</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
-    {% if posts %}
-    <div class="row g-4">
-        {% for post in posts %}
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-                {% if post.imagen %}
-                <img src="{{ post.imagen.url }}" class="card-img-top" alt="{{ post.titulo }}"
-                    style="object-fit: cover; height: 200px" />
-                {% endif %}
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ post.titulo }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        {{ post.destino }} · {{ post.fecha_publicacion|date:"d/m/Y" }}
-                    </h6>
-                    <p class="card-text flex-grow-1">
-                        {{ post.contenido|striptags|truncatechars:120 }}
-                    </p>
-                    <a href="{% url 'page_detail' post.pk %}" class="btn btn-sm btn-primary mt-2">
-                        Leer más
-                    </a>
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-2">Tu espacio de viajes</h2>
+                <div class="text-muted">
+                    Un lugar para guardar recuerdos, organizar destinos y compartir historias.
+                </div>
+                <hr style="border-color: rgba(255,255,255,.12);">
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-light" href="{% url 'about' %}">Conocer la página</a>
+                    <a class="btn btn-outline-light" href="{% url 'pages_list' %}">Explorar viajes</a>
+                    {% if user.is_authenticated %}
+                    <a class="btn btn-primary" href="{% url 'page_create' %}">Publicar nuevo</a>
+                    {% else %}
+                    <a class="btn btn-primary" href="{% url 'login' %}">Ingresar</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p class="text-muted">Todavía no hay viajes publicados. ¡Creá el primero!</p>
-    {% endif %}
-</section>
 
-<section class="py-4 border-top">
-    <div class="row align-items-center">
-        <div class="col-md-6">
-            <h3 class="fw-bold">Pensado para viajeros reales</h3>
-            <p class="text-muted">
-                Este blog te permite registrar tus experiencias, alojamientos,
-                recomendaciones y tips para que no se pierdan en un chat o una nota del
-                celular.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <ul class="list-unstyled">
-                <li>✅ Publicá tus viajes con fotos y descripción detallada.</li>
-                <li>✅ Organizá tus destinos según fecha y lugar.</li>
-                <li>✅ Conectate con otros usuarios mediante mensajes.</li>
-                <li>✅ Actualizá tu perfil de viajero cuando quieras.</li>
-            </ul>
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="h6 mb-2">Tips para escribir un buen post</h2>
+                <ul class="mb-0 text-muted">
+                    <li>Contá qué hiciste y cómo llegaste</li>
+                    <li>Agregá una foto que resuma el viaje</li>
+                    <li>Dejá un dato útil para otros viajeros</li>
+                </ul>
+            </div>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}

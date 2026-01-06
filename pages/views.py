@@ -1,16 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import PostViajeForm
-from .models import PostViaje
+from .forms import PostViajeForm, CategoriaForm, DestinoForm
+from .models import PostViaje, Categoria, Destino, Comentario
 
 
 def home(request):
-    ultimos = PostViaje.objects.order_by("-fecha")[:6]
+    ultimos = PostViaje.objects.select_related("autor", "categoria", "destino").order_by("-fecha", "-creado_el")[:6]
     return render(request, "pages/home.html", {"ultimos": ultimos})
 
 
@@ -26,7 +26,11 @@ class PostViajeListView(ListView):
     paginate_by = 9
 
     def get_queryset(self):
-        qs = super().get_queryset().order_by("-fecha")
+        qs = (
+            PostViaje.objects.select_related("autor", "categoria", "destino")
+            .all()
+            .order_by("-fecha", "-creado_el")
+        )
         q = self.request.GET.get("q")
         if q:
             qs = qs.filter(titulo__icontains=q)
@@ -35,8 +39,13 @@ class PostViajeListView(ListView):
 
 class PostViajeDetailView(DetailView):
     model = PostViaje
-    template_name = "pages/page_detail.html"
+    template_name = "pages/pages_detail.html"
     context_object_name = "post"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["comentarios"] = Comentario.objects.select_related("autor").filter(post=self.object)
+        return ctx
 
 
 class PostViajeCreateView(LoginRequiredMixin, CreateView):
@@ -79,3 +88,38 @@ class PostViajeDeleteView(LoginRequiredMixin, EsAutorMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Viaje eliminado.")
         return super().delete(request, *args, **kwargs)
+
+
+class CategoriaCreateView(LoginRequiredMixin, CreateView):
+    model = Categoria
+    form_class = CategoriaForm
+    template_name = "pages/categoria_form.html"
+    success_url = reverse_lazy("pages_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Categoría creada.")
+        return super().form_valid(form)
+
+
+class DestinoCreateView(LoginRequiredMixin, CreateView):
+    model = Destino
+    form_class = DestinoForm
+    template_name = "pages/destino_form.html"
+    success_url = reverse_lazy("pages_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Destino creado.")
+        return super().form_valid(form)
+
+
+@login_required
+def comentario_create(request, pk):
+    post = get_object_or_404(PostViaje, pk=pk)
+    if request.method == "POST":
+        texto = (request.POST.get("texto") or "").strip()
+        if texto:
+            Comentario.objects.create(post=post, autor=request.user, texto=texto)
+            messages.success(request, "Comentario publicado.")
+        else:
+            messages.error(request, "El comentario no puede estar vacío.")
+    return redirect("page_detail", pk=post.pk)

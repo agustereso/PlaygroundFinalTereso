@@ -1,32 +1,54 @@
 {% extends "pages/base.html" %}
-
-{% block title %}Bandeja de entrada{% endblock %}
+{% block title %}Mensajes{% endblock %}
 
 {% block content %}
-<h1>Bandeja de entrada</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Mensajes</h1>
+        <div class="text-muted">Tu bandeja de entrada</div>
+    </div>
+    <a class="btn btn-primary" href="{% url 'messaging:message_create' %}">Nuevo mensaje</a>
+</div>
 
-<a href="{% url 'message_new' %}" class="btn btn-primary mb-3">Nuevo mensaje</a>
-<a href="{% url 'sent' %}" class="btn btn-outline-secondary mb-3">Ver enviados</a>
-
-{% if mensajes %}
-<ul class="list-group">
-    {% for mensaje in mensajes %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-            <strong>De:</strong> {{ mensaje.sender.username }}<br>
-            <strong>Asunto:</strong>
-            <a href="{% url 'message_detail' mensaje.pk %}">
-                {{ mensaje.subject }}
-            </a><br>
-            <small>{{ mensaje.created_at }}</small>
+<div class="card">
+    <div class="card-body p-0">
+        {% if threads %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="py-3 ps-4">Conversación</th>
+                        <th class="py-3">Último mensaje</th>
+                        <th class="py-3 text-end pe-4">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in threads %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold">{{ t }}</div>
+                            <div class="text-muted small">Abrí la conversación para ver el detalle</div>
+                        </td>
+                        <td>
+                            <span class="text-muted small">
+                                {{ t.updated_at|date:"d/m/Y H:i" }}
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a class="btn btn-outline-light btn-sm" href="{% url 'messaging:message_detail' t.pk %}">Ver</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        {% if not mensaje.is_read %}
-        <span class="badge text-bg-primary">Nuevo</span>
+        {% else %}
+        <div class="p-4">
+            <div class="empty-state">
+                No tenés conversaciones todavía. Cuando envíes o recibas un mensaje, aparecen acá ✨
+            </div>
+        </div>
         {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No tenés mensajes aún.</p>
-{% endif %}
+    </div>
+</div>
 {% endblock %}

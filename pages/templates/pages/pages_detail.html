@@ -1,0 +1,108 @@
+{% extends "pages/base.html" %}
+{% block title %}{{ post.titulo }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title mb-1">{{ post.titulo }}</h1>
+        <div class="text-muted">
+            {% if post.destino %}{{ post.destino }}{% else %}Destino -{% endif %}
+            ·
+            {% if post.categoria %}{{ post.categoria }}{% else %}Categoría -{% endif %}
+            ·
+            {{ post.fecha|date:"d/m/Y" }}
+            ·
+            por {{ post.autor.username }}
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-light" href="{% url 'pages_list' %}">Volver</a>
+        {% if user.is_authenticated and post.autor == user %}
+        <a class="btn btn-outline-light" href="{% url 'page_update' post.pk %}">Editar</a>
+        <a class="btn btn-danger" href="{% url 'page_delete' post.pk %}">Eliminar</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            {% if post.imagen %}
+            <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}"
+                style="width:100%; height:380px; object-fit:cover;">
+            {% endif %}
+            <div class="card-body p-4">
+                <div class="text-muted small mb-3">
+                    Publicado el {{ post.creado_el|date:"d/m/Y H:i" }}
+                </div>
+
+                <div class="p-4 rounded-4"
+                    style="border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);">
+                    {{ post.contenido|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h2 class="h6 mb-2">Resumen</h2>
+                <div class="text-muted mb-2">
+                    <span class="fw-semibold text-white">Destino:</span>
+                    {% if post.destino %}{{ post.destino }}{% else %}-{% endif %}
+                </div>
+                
+                <div class="text-muted mb-2">
+                    <span class="fw-semibold text-white">Categoría:</span>
+                    {% if post.categoria %}{{ post.categoria }}{% else %}-{% endif %}
+                </div>
+ 
+                <div class="text-muted"><span class="fw-semibold text-white">Autor:</span> {{ post.autor.username }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="h6 mb-3">Comentarios</h2>
+
+                {% if comentarios %}
+                <div class="d-flex flex-column gap-3 mb-4">
+                    {% for c in comentarios %}
+                    <div class="p-3 rounded-4"
+                        style="border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div class="fw-semibold">{{ c.autor.username }}</div>
+                            <div class="text-muted small">{{ c.creado_el|date:"d/m/Y H:i" }}</div>
+                        </div>
+                        <div class="text-muted mt-2">{{ c.texto }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-muted mb-4">Todavía no hay comentarios.</div>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'comentario_create' post.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Dejá tu comentario</label>
+                        <textarea name="texto" class="form-control" rows="3" placeholder="Escribí algo..."></textarea>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Publicar comentario</button>
+                </form>
+                {% else %}
+                <div class="p-3 rounded-4"
+                    style="border:1px dashed rgba(255,255,255,.15); background: rgba(255,255,255,.03);">
+                    <div class="text-muted mb-2">Para comentar tenés que iniciar sesión.</div>
+                    <a class="btn btn-outline-light w-100" href="{% url 'login' %}">Login</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

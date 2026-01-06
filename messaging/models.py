@@ -1,27 +1,27 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Message(models.Model):
-    objects = models.Manager()
-
-    sender = models.ForeignKey(
-        User,
+    from_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="sent_messages"
+        related_name="messages_sent",
     )
-    recipient = models.ForeignKey(
-        User,
+    to_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="received_messages"
+        related_name="messages_received",
     )
-    subject = models.CharField(max_length=200)
-    body = models.TextField()
+    subject = models.CharField(max_length=120)
+    body = models.TextField(max_length=2000)
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+
+    objects = models.Manager()
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"De {self.sender} para {self.recipient}: {self.subject}"
+        return f"{self.subject} ({self.from_user} → {self.to_user})"

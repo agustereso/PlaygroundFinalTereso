@@ -1,57 +1,48 @@
 {% extends "pages/base.html" %}
-
 {% block title %}{% if object %}Editar viaje{% else %}Publicar viaje{% endif %}{% endblock %}
 
-{% block extra_head %}
-{{ form.media }}
-{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
+<div class="page-header">
+    <h1 class="page-title">{% if object %}Editar viaje{% else %}Publicar viaje{% endif %}</h1>
+    <a class="btn btn-outline-light" href="{% url 'pages_list' %}">Volver</a>
+</div>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="mb-0">{% if object %}Editar viaje{% else %}Publicar viaje{% endif %}</h1>
-            <a class="btn btn-outline-secondary" href="{% url 'pages_list' %}">Volver</a>
-        </div>
+<div class="card">
+    <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data" class="row g-3">
+            {% csrf_token %}
 
-        {% if form.errors %}
-        <div class="alert alert-danger">
-            Revisá los campos marcados.
-        </div>
-        {% endif %}
-
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <form method="post" enctype="multipart/form-data" novalidate>
-                    {% csrf_token %}
-
-                    {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label">{{ field.label }}</label>
-                        {{ field }}
-
-                        {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
-                        {% endif %}
-
-                        {% if field.errors %}
-                        <div class="text-danger small mt-1">
-                            {% for error in field.errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-
-                    <button class="btn btn-primary" type="submit">
-                        {% if object %}Guardar cambios{% else %}Publicar{% endif %}
-                    </button>
-                </form>
+            <div class="col-12">
+                <label class="form-label">Título</label>
+                {{ form.titulo }}
             </div>
-        </div>
 
+            <div class="col-md-6">
+                <label class="form-label">Categoría</label>
+                {{ form.categoria }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Destino</label>
+                {{ form.destino }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Contenido</label>
+                {{ form.contenido }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Imagen</label>
+                {{ form.imagen }}
+                <div class="form-text">Opcional. Podés subir una foto del viaje.</div>
+            </div>
+
+            <div class="col-12 d-flex gap-2 pt-2">
+                <button class="btn btn-primary" type="submit">Guardar</button>
+                <a class="btn btn-outline-light" href="{% url 'pages_list' %}">Cancelar</a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

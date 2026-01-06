@@ -1,147 +1,141 @@
-# PlaygroundFinalTereso – Blog de Viajes 🌍✈️
+# 🌍 Playground Viajes
 
-## 📝 Descripción
-
-Este proyecto corresponde a la **Entrega Final – Playground Final Project (Coderhouse – Python/Django)**.
-
-Es una aplicación web estilo **blog de viajes**, desarrollada con **Django**, que incluye:
-
-- Manejo de usuarios (registro, login, logout).
-- Perfiles de usuario con avatar y datos personales.
-- CRUD completo de publicaciones de viajes.
-- Editor de texto enriquecido para el contenido (CKEditor).
-- Sistema de mensajería interna entre usuarios.
-- Herencia de plantillas y navegación con Navbar.
+Playground Viajes es una aplicación web desarrollada en **Python con Django**, pensada como un blog de viajes donde los usuarios pueden compartir experiencias, contar sus recorridos y comunicarse entre ellos.  
+Este proyecto fue realizado como trabajo final del curso de Python.
 
 ---
 
-## 🚀 Tecnologías utilizadas
+## 👩‍💻 Sobre el proyecto
 
-- Python 3
-- Django 4.x
-- SQLite3 (como base de datos local)
-- django-ckeditor (contenido enriquecido)
-- HTML5 + Bootstrap 5
-- Patrón **MVT (Model–View–Template)**
+La idea de la aplicación es combinar dos cosas que me gustan mucho:  
+viajar y programar.
 
----
+El sitio funciona como un **diario de viajes**, en el que cada usuario puede crear publicaciones con texto, imágenes y detalles del destino. Además, cuenta con un sistema de usuarios, perfiles personalizados y mensajería interna.
 
-## 🧱 Estructura del proyecto
-
-Aplicaciones principales del proyecto:
-
-- **pages**
-
-  - Modelo principal: `PostViaje`
-  - Blog de viajes: listado, detalle, creación, edición y borrado de posts.
-
-- **accounts**
-
-  - Registro, login, logout.
-  - Vista de perfil y edición de perfil.
-  - Cambio de contraseña.
-  - Modelo `Profile` asociado a `User` con:
-    - avatar
-    - bio
-    - fecha de nacimiento
-    - link
-
-- **messaging**
-  - Sistema de mensajería entre usuarios:
-    - Bandeja de entrada
-    - Mensajes enviados
-    - Detalle de mensaje
-    - Envío de nuevos mensajes
+El foco del proyecto estuvo puesto en aplicar buenas prácticas de Django, organizar correctamente el código y que la aplicación sea clara y fácil de usar.
 
 ---
 
-## 🗂️ Modelo principal: `PostViaje`
-
-El modelo principal del blog de viajes cumple los requisitos de la consigna:
-
-- `titulo` – `CharField`
-- `destino` – `CharField`
-- `contenido` – `RichTextField` (CKEditor)
-- `imagen` – `ImageField`
-- `fecha_publicacion` – `DateTimeField`
-- `autor` – `ForeignKey` a `User`
-
-Además, todas las apps se encuentran registradas en el panel de **admin de Django**.
-
----
-
-## 🌐 Rutas principales
+## 🧭 Funcionalidades principales
 
 ### Navegación general
+- Home
+- Acerca de mí
+- Viajes
+- Login / Registro
+- Perfil
+- Mensajes
+- Logout
 
-| Sección           | URL                   | Descripción                        |
-| ----------------- | --------------------- | ---------------------------------- |
-| Home              | `/`                   | Página de inicio                   |
-| About             | `/about/`             | Acerca de la autora / blog         |
-| Listado de viajes | `/pages/`             | Listado de publicaciones de viajes |
-| Detalle de viaje  | `/pages/<id>/`        | Detalle de una publicación         |
-| Crear viaje       | `/pages/crear/`       | Crear nuevo post (requiere login)  |
-| Editar viaje      | `/pages/<id>/editar/` | Editar post (requiere login)       |
-| Borrar viaje      | `/pages/<id>/borrar/` | Borrar post (requiere login)       |
+### Viajes (modelo principal)
+- Listado de viajes publicados
+- Vista de detalle de cada viaje
+- Crear nuevos viajes
+- Editar viajes (solo usuarios logueados)
+- Eliminar viajes (solo usuarios logueados)
+- Mensaje informativo cuando no hay viajes cargados
 
-### Autenticación y perfiles
-
-| Funcionalidad      | URL                          |
-| ------------------ | ---------------------------- |
-| Registro           | `/accounts/signup/`          |
-| Login              | `/accounts/login/`           |
-| Logout             | `/accounts/logout/`          |
-| Ver perfil         | `/accounts/profile/`         |
-| Editar perfil      | `/accounts/profile/edit/`    |
-| Cambiar contraseña | `/accounts/password/change/` |
-
-### Mensajería
-
-| Funcionalidad      | URL                |
-| ------------------ | ------------------ |
-| Bandeja de entrada | `/mensajes/inbox/` |
-| Mensajes enviados  | `/mensajes/sent/`  |
-| Nuevo mensaje      | `/mensajes/new/`   |
-| Detalle de mensaje | `/mensajes/<id>/`  |
+Cada viaje incluye:
+- Título
+- Subtítulo
+- Texto enriquecido (CKEditor)
+- Imagen
+- Fecha de creación
+- Categoría y destino
 
 ---
 
-## ▶️ Cómo ejecutar el proyecto en local
+## 👤 Usuarios y perfiles
 
-### 1️⃣ Clonar el repositorio
+- Registro de usuarios con:
+  - Username
+  - Email
+  - Password
+- Login y logout
+- Perfil de usuario con:
+  - Nombre
+  - Apellido
+  - Email
+  - Avatar
+  - Biografía u otra información personal
+- Edición de perfil
+- Cambio de contraseña desde el perfil
 
-```bash
-git clone https://github.com/agustereso/PlaygroundFinalTereso.git
+---
+
+## 💬 Mensajería
+
+La aplicación cuenta con una **app de mensajería interna** que permite que los usuarios se comuniquen entre sí.
+
+Incluye:
+- Bandeja de entrada
+- Mensajes enviados
+- Envío de mensajes
+- Vista de detalle de cada mensaje
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- Python 3
+- Django
+- Bootstrap 5
+- HTML y CSS
+- SQLite (solo para desarrollo)
+- CKEditor
+
+---
+
+## ▶️ Cómo ejecutar el proyecto
+
+Para ejecutar el proyecto de manera local, seguí estos pasos:
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/tu-usuario/tu-repositorio.git
+
+2. **Ingresar a la carpeta del proyecto**
+
 cd PlaygroundFinalTereso
-```
 
-2️⃣ Crear y activar entorno virtual  
-python -m venv venv  
-source venv/Scripts/activate
 
-3️⃣ Instalar dependencias  
+3. **Crear un entorno virtual**
+
+python -m venv venv
+
+
+4. **Activar el entorno virtual**
+
+- ***En Windows:***
+
+venv\Scripts\activate
+
+
+- ***En Linux / macOS:***
+
+source venv/bin/activate
+
+
+5. **Instalar las dependencias**
+
 pip install -r requirements.txt
 
-4️⃣ Aplicar migraciones  
-python manage.py makemigrations  
+
+6. **Ejecutar las migraciones**
+
 python manage.py migrate
 
-5️⃣ Crear superusuario (opcional pero recomendado)  
+
+7. **Crear un superusuario (para acceder al admin)**
+
 python manage.py createsuperuser
 
-6️⃣ Ejecutar el servidor de desarrollo  
+
+8. **Levantar el servidor de desarrollo**
+
 python manage.py runserver
 
-Abrir en el navegador:  
-http://127.0.0.1:8000/
 
-📌 Flujo sugerido para probar la app:  
-Ingresar a /accounts/signup/ y crear un usuario.  
-Loguearse si es necesario desde /accounts/login/.  
-Crear uno o más viajes desde /pages/crear/ o desde el admin.  
-Navegar por el listado en /pages/ y entrar a los detalles.  
-Editar y borrar un viaje (requiere estar logueado).  
-Ir a /accounts/profile/ para ver y editar el perfil (avatar, bio, etc.).  
-Probar el cambio de contraseña en /accounts/password/change/.  
-Desde /mensajes/new/ enviar mensajes a otros usuarios.  
-Ver la bandeja de entrada en /mensajes/inbox/ y enviados en /mensajes/sent/.
+9. **Abrir el navegador e ingresar a**
+
+http://127.0.0.1:8000/

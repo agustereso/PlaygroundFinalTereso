@@ -1,13 +1,25 @@
 {% extends "pages/base.html" %}
-
 {% block title %}Nuevo mensaje{% endblock %}
 
 {% block content %}
-<h1>Enviar mensaje</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Nuevo mensaje</h1>
+        <div class="text-muted">Escribí y enviá un mensaje</div>
+    </div>
+    <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}">Volver</a>
+</div>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-success" type="submit">Enviar</button>
-</form>
+<div class="card">
+    <div class="card-body p-4">
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex gap-2 pt-2">
+                <button class="btn btn-primary" type="submit">Enviar</button>
+                <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

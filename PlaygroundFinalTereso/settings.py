@@ -1,22 +1,12 @@
 from pathlib import Path
+from django.contrib.messages import constants as messages
 
-# BASE DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# ==========================
-# SEGURIDAD
-# ==========================
 SECRET_KEY = "django-insecure-cambia-esto-si-queres"
-
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
-
-# ==========================
-# APLICACIONES
-# ==========================
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -24,20 +14,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    # Terceros
     "ckeditor",
-
-    # Apps propias
     "pages",
     "accounts",
     "messaging",
 ]
 
-
-# ==========================
-# MIDDLEWARE
-# ==========================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -48,22 +30,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
-# ==========================
-# URLS / WSGI
-# ==========================
 ROOT_URLCONF = "PlaygroundFinalTereso.urls"
-
 WSGI_APPLICATION = "PlaygroundFinalTereso.wsgi.application"
 
-
-# ==========================
-# TEMPLATES
-# ==========================
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],  # usamos templates por app
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -76,9 +49,6 @@ TEMPLATES = [
 ]
 
 
-# ==========================
-# BASE DE DATOS
-# ==========================
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -86,62 +56,26 @@ DATABASES = {
     }
 }
 
-
-# ==========================
-# PASSWORD VALIDATORS
-# ==========================
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
-# ==========================
-# INTERNACIONALIZACIÓN (ESPAÑOL)
-# ==========================
 LANGUAGE_CODE = "es-ar"
-
 TIME_ZONE = "America/Argentina/Buenos_Aires"
-
 USE_I18N = True
 USE_TZ = True
 
-
-# ==========================
-# STATIC FILES
-# ==========================
 STATIC_URL = "/static/"
 
-
-# ==========================
-# MEDIA (IMÁGENES)
-# ==========================
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-
-# ==========================
-# AUTH (LOGIN / LOGOUT)
-# ==========================
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
-
-
-# ==========================
-# MENSAJES
-# ==========================
-from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
     messages.DEBUG: "secondary",
@@ -151,10 +85,6 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
 }
 
-
-# ==========================
-# CKEDITOR
-# ==========================
 CKEDITOR_CONFIGS = {
     "default": {
         "toolbar": "full",
@@ -163,8 +93,4 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-
-# ==========================
-# DEFAULT FIELD
-# ==========================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

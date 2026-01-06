@@ -1,18 +1,39 @@
 {% extends "pages/base.html" %}
-{% block title %}Borrar viaje{% endblock %}
+{% block title %}Eliminar viaje{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h1 class="h4 mb-3">¿Seguro que querés borrar este viaje?</h1>
-                <p class="mb-4"><strong>{{ object.titulo }}</strong> — {{ object.destino }}</p>
+    <div class="col-md-10 col-lg-7">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Eliminar viaje</h1>
+                <div class="text-muted">Esta acción no se puede deshacer</div>
+            </div>
+            <a class="btn btn-outline-light" href="{% url 'page_detail' object.pk %}">Volver</a>
+        </div>
 
-                <form method="post">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="p-3 rounded-4 mb-3"
+                    style="border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);">
+                    <div class="fw-bold">{{ object.titulo }}</div>
+                    <div class="text-muted small">
+                        {% if object.destino %}{{ object.destino }}{% else %}Destino -{% endif %}
+                        ·
+                        {% if object.categoria %}{{ object.categoria }}{% else %}Categoría -{% endif %}
+                        ·
+                        {{ object.fecha|date:"d/m/Y" }}
+                    </div>
+                </div>
+
+                <div class="alert alert-danger mb-4">
+                    ¿Seguro que querés eliminar este viaje?
+                </div>
+
+                <form method="post" class="d-flex gap-2">
                     {% csrf_token %}
-                    <a class="btn btn-outline-secondary" href="{% url 'page_detail' object.pk %}">Cancelar</a>
-                    <button class="btn btn-danger" type="submit">Sí, borrar</button>
+                    <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+                    <a class="btn btn-outline-light" href="{% url 'page_detail' object.pk %}">Cancelar</a>
                 </form>
             </div>
         </div>
