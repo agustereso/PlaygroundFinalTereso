@@ -139,3 +139,11 @@ python manage.py runserver
 9. **Abrir el navegador e ingresar a**
 
 http://127.0.0.1:8000/
+
+---
+
+## 🎥 Video demostración
+
+En el siguiente video se muestra el funcionamiento general de la aplicación, navegación y funcionalidades principales:
+
+https://drive.google.com/drive/folders/1ML8KjF-5YGoMs5uLylmA4CCiIkOhze-y?usp=sharing
